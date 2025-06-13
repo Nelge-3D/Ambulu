@@ -1,5 +1,7 @@
 export default function page () {
-    return [
+    return (
+
         <div>cours page</div>
-    ]
+    )
+    
 }
