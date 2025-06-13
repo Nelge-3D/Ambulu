@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import Nav from "./Nav";
 
 export default function page () {
+
     return (
         <main className="bg-background text-text font-sans">
             <FloatingMenu/>
@@ -20,4 +21,5 @@ export default function page () {
 
         </main>
     )
+
 }
