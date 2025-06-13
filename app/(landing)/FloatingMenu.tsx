@@ -38,7 +38,7 @@ export default function FloatingMenu() {
               <li
                 key={section.id}
                 onClick={() => scrollToSection(section.id)}
-                className="cursor-pointer rounded-xl bg-white px-4 py-2 text-sm shadow-md transition hover:bg-gray-100"
+                className="cursor-pointer text-green-800 rounded-xl bg-white px-4 py-2 text-sm shadow-md transition hover:bg-gray-100"
               >
                 {section.label}
               </li>

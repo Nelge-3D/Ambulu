@@ -4,11 +4,13 @@ import Hero from "./Hero";
 import Contact from "./Contact";
 import Demo from "./Demo";
 import Footer from "./Footer";
+import Nav from "./Nav";
 
 export default function page () {
-    return [
+    return (
         <main className="bg-background text-text font-sans">
             <FloatingMenu/>
+            <Nav/>
             <Hero/>
             <About/>
             <Contact/>
@@ -17,5 +19,5 @@ export default function page () {
 
 
         </main>
-    ]
+    )
 }
