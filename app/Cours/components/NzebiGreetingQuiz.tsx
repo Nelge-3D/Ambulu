@@ -55,16 +55,16 @@ export default function NzebiGreetingQuiz() {
             {questions[currentQuestion].question}
           </h2>
           <div className="space-y-2">
-            {questions[currentQuestion].options.map((option, index) => (
-              <button
-                key={index}
-                className="w-full py-2 px-4 bg-blue-100 hover:bg-blue-200 rounded-lg"
-                onClick={() => handleAnswer(option)}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
+  {questions[currentQuestion].options.map((option: string) => (
+    <button
+      key={option}
+      className="w-full py-2 px-4 bg-green-100 hover:bg-green-200 rounded-lg"
+      onClick={() => handleAnswer(option)}
+    >
+      {option}
+    </button>
+  ))}
+</div>
         </>
       )}
     </div>

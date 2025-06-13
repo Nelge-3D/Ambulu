@@ -8,6 +8,8 @@ type Question = {
   answer: string;
 };
 
+
+
 const questions: Question[] = [
   {
     question: "Comment dit-on 'Bonjour' en Téké ?",
@@ -54,17 +56,17 @@ export default function TekeGreetingQuiz() {
           <h2 className="text-lg font-bold mb-4">
             {questions[currentQuestion].question}
           </h2>
-          <div className="space-y-2">
-            {questions[currentQuestion].options.map((option, index) => (
-              <button
-                key={index}
-                className="w-full py-2 px-4 bg-green-100 hover:bg-green-200 rounded-lg"
-                onClick={() => handleAnswer(option)}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
+<div className="space-y-2">
+  {questions[currentQuestion].options.map((option: string) => (
+    <button
+      key={option}
+      className="w-full py-2 px-4 bg-green-100 hover:bg-green-200 rounded-lg"
+      onClick={() => handleAnswer(option)}
+    >
+      {option}
+    </button>
+  ))}
+</div>
         </>
       )}
     </div>

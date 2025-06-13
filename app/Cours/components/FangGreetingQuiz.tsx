@@ -48,13 +48,13 @@ export default function FangGreetingQuiz() {
         <>
           <p className="font-semibold text-gray-800">{questions[step].question}</p>
           <div className="space-y-2">
-            {questions[step].options.map((opt, idx) => (
+            {questions[step].options.map((option: string) => (
               <button
-                key={idx}
-                onClick={() => handleAnswer(opt)}
-                className="block w-full text-left bg-gray-100 hover:bg-gray-200 rounded px-4 py-2"
+                key={option}
+                className="w-full py-2 px-4 bg-green-100 hover:bg-green-200 rounded-lg"
+                onClick={() => handleAnswer(option)}
               >
-                {opt}
+                {option}
               </button>
             ))}
           </div>
