@@ -1,11 +1,9 @@
-
 import React from 'react'
 
-export default function index() {
+export default function page() {
   return (
     <div>
       
     </div>
   )
 }
-
