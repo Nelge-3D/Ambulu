@@ -1,3 +1,4 @@
+
 import React from 'react'
 
 export default function CourseDetailPage() {
@@ -7,3 +8,4 @@ export default function CourseDetailPage() {
     </div>
   )
 }
+
