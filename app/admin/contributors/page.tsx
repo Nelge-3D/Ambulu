@@ -74,97 +74,107 @@ export default function ContributorsPage() {
 
   return (
     <AdminLayout>
-      <div className="flex items-center justify-between mb-6">
+      {/* Titre et filtres */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4 flex-wrap">
         <h1 className="text-3xl font-bold">Gestion des contributeurs</h1>
-      </div>
 
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-2">
-          <Search className="text-gray-500" size={18} />
-          <input
-            type="text"
-            placeholder="Rechercher un contributeur..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-          />
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full sm:w-auto flex-wrap">
+          <div className="flex items-center gap-2 flex-1 min-w-[200px] max-w-md">
+            <Search className="text-gray-500" size={18} />
+            <input
+              type="text"
+              placeholder="Rechercher un contributeur..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <select
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value as "all" | "active" | "inactive")}
+            className="text-sm border border-gray-300 rounded px-3 py-2 max-w-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="all">Tous</option>
+            <option value="active">Actifs</option>
+            <option value="inactive">Désactivés</option>
+          </select>
         </div>
-
-        <select
-          value={statusFilter}
-          onChange={e => setStatusFilter(e.target.value as "all" | "active" | "inactive")}
-          className="text-sm border border-gray-300 rounded px-2 py-2"
-        >
-          <option value="all">Tous</option>
-          <option value="active">Actifs</option>
-          <option value="inactive">Désactivés</option>
-        </select>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto border border-gray-200 rounded-xl overflow-hidden">
-          <thead className="bg-gray-100 text-left text-sm">
+      {/* Tableau responsive / affichage en cartes sur mobile */}
+      <div className="overflow-x-auto rounded-lg border border-gray-200">
+        <table className="min-w-full table-auto">
+          <thead className="hidden sm:table-header-group bg-gray-100 text-left text-sm md:text-base">
             <tr>
-              <th className="px-4 py-2">Nom</th>
-              <th className="px-4 py-2">Email</th>
-              <th className="px-4 py-2">Rôle</th>
-              <th className="px-4 py-2">Statut</th>
-              <th className="px-4 py-2">Actions</th>
+              <th className="px-4 py-3">Nom</th>
+              <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Rôle</th>
+              <th className="px-4 py-3">Statut</th>
+              <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
-          <tbody className="text-sm divide-y">
-            {filteredContributors.map((contributor) => (
-              <tr
-                key={contributor.id}
-                className={contributor.active ? "" : "opacity-50 cursor-not-allowed"}
-              >
-                <td className="px-4 py-2">{contributor.name}</td>
-                <td className="px-4 py-2">{contributor.email}</td>
-                <td className="px-4 py-2 capitalize">
-                  <span
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium text-white ${
-                      contributor.role === "admin"
-                        ? "bg-red-600"
-                        : contributor.role === "superadmin"
-                        ? "bg-purple-600"
-                        : "bg-blue-600"
-                    }`}
-                  >
-                    {contributor.role}
-                  </span>
-                </td>
-                <td className="px-4 py-2">
-                  {contributor.active ? "Actif" : "Désactivé"}
-                </td>
-                <td className="px-4 py-2 space-x-2">
-                  <button
-                    onClick={() => openModal(contributor)}
-                    className="text-blue-600 hover:text-blue-800"
-                    aria-label={`Modifier le contributeur ${contributor.name}`}
-                    title="Modifier"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                  <button
-                    onClick={() => toggleActiveStatus(contributor.id)}
-                    className="text-yellow-600 hover:text-yellow-800"
-                    aria-label={contributor.active ? "Désactiver le contributeur" : "Activer le contributeur"}
-                    title={contributor.active ? "Désactiver" : "Activer"}
-                  >
-                    {contributor.active ? "Désactiver" : "Activer"}
-                  </button>
-                  <button
-                    onClick={() => deleteContributor(contributor.id)}
-                    className="text-red-600 hover:text-red-800"
-                    aria-label={`Supprimer le contributeur ${contributor.name}`}
-                    title="Supprimer"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {filteredContributors.length === 0 && (
+          <tbody className="text-sm md:text-base divide-y sm:table-row-group">
+            {filteredContributors.length > 0 ? (
+              filteredContributors.map((contributor) => (
+                <tr
+                  key={contributor.id}
+                  className={`block sm:table-row bg-white border sm:border-0 rounded-lg sm:rounded-none mb-4 sm:mb-0 ${
+                    contributor.active ? "" : "opacity-50"
+                  }`}
+                >
+                  <td className="block sm:table-cell px-4 py-2">
+                    <span className="font-semibold sm:hidden">Nom : </span>
+                    {contributor.name}
+                  </td>
+                  <td className="block sm:table-cell px-4 py-2 break-words">
+                    <span className="font-semibold sm:hidden">Email : </span>
+                    {contributor.email}
+                  </td>
+                  <td className="block sm:table-cell px-4 py-2 capitalize">
+                    <span className="font-semibold sm:hidden">Rôle : </span>
+                    <span
+                      className={`inline-block px-2 py-1 rounded-full text-xs font-medium text-white ${
+                        contributor.role === "admin"
+                          ? "bg-red-600"
+                          : contributor.role === "superadmin"
+                          ? "bg-purple-600"
+                          : "bg-blue-600"
+                      }`}
+                    >
+                      {contributor.role}
+                    </span>
+                  </td>
+                  <td className="block sm:table-cell px-4 py-2">
+                    <span className="font-semibold sm:hidden">Statut : </span>
+                    {contributor.active ? "Actif" : "Désactivé"}
+                  </td>
+                  <td className="block sm:table-cell px-4 py-2">
+                    <span className="font-semibold sm:hidden">Actions : </span>
+                    <div className="flex flex-wrap gap-2 mt-2 sm:mt-0">
+                      <button
+                        onClick={() => openModal(contributor)}
+                        className="text-blue-600 hover:text-blue-800 flex items-center"
+                      >
+                        <Pencil size={16} />
+                      </button>
+                      <button
+                        onClick={() => toggleActiveStatus(contributor.id)}
+                        className="text-yellow-600 hover:text-yellow-800 text-sm"
+                      >
+                        {contributor.active ? "Désactiver" : "Activer"}
+                      </button>
+                      <button
+                        onClick={() => deleteContributor(contributor.id)}
+                        className="text-red-600 hover:text-red-800 flex items-center"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
                 <td colSpan={5} className="px-4 py-6 text-center text-gray-500">
                   Aucun contributeur trouvé
@@ -175,14 +185,14 @@ export default function ContributorsPage() {
         </table>
       </div>
 
+      {/* Modal édition */}
       <Dialog
         open={isOpen}
         onClose={closeModal}
-        className="fixed z-50 inset-0 flex items-center justify-center"
+        className="fixed z-50 inset-0 flex items-center justify-center p-4"
       >
         <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
-
-        <Dialog.Panel className="relative bg-white p-6 rounded-xl w-[90%] max-w-md z-50 shadow-lg">
+        <Dialog.Panel className="relative bg-white p-6 rounded-xl w-full max-w-md z-50 shadow-lg">
           <Dialog.Title className="text-xl font-semibold mb-4">
             Modifier le rôle de {editingContributor?.name}
           </Dialog.Title>
@@ -194,30 +204,29 @@ export default function ContributorsPage() {
               <select
                 id="role"
                 {...register("role", { required: "Le rôle est requis" })}
-                className={`w-full border rounded px-3 py-2 ${
-                  errors.role ? "border-red-500" : "border-gray-300"
-                }`}
-                aria-label="Sélectionner un rôle"
-                title="Sélectionner un rôle"
+                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="contributeur">Contributeur</option>
-                <option value="admin">Administrateur</option>
-                <option value="superadmin">Super Admin</option>
+                <option value="admin">Admin</option>
+                <option value="superadmin">Superadmin</option>
               </select>
+              {errors.role && (
+                <p className="text-red-600 text-xs mt-1">{errors.role.message}</p>
+              )}
             </div>
             <div className="flex justify-end gap-2">
               <button
                 type="button"
                 onClick={closeModal}
-                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
               >
                 Annuler
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
-                Modifier
+                Enregistrer
               </button>
             </div>
           </form>

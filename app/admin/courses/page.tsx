@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect,} from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "@/app/admin/components/Adminlayout";
-import { Plus, Pencil, Trash2, Search } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Dialog } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 
@@ -31,9 +31,9 @@ export default function CoursesPage() {
     const matchesSearch =
       course.title.toLowerCase().includes(search.toLowerCase()) ||
       course.language.toLowerCase().includes(search.toLowerCase());
-    
+
     const matchesLanguage = languageFilter === "all" || course.language === languageFilter;
-    
+
     return matchesSearch && matchesLanguage;
   });
 
@@ -78,212 +78,117 @@ export default function CoursesPage() {
     setShowDeleteConfirm(null);
   };
 
-  // Focus le premier champ quand la modale s'ouvre
   useEffect(() => {
     if (isOpen) setFocus("title");
   }, [isOpen, setFocus]);
 
   return (
     <AdminLayout>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Gestion des cours</h1>
-        <button
-          onClick={() => openModal()}
-          className="flex items-center gap-2 px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-        >
-          <Plus size={16} /> Ajouter un cours
-        </button>
-      </div>
-
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="flex items-center gap-2 flex-1">
-          <Search className="text-gray-500" size={18} />
-          <input
-            type="text"
-            placeholder="Rechercher un cours..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-            aria-label="Rechercher un cours"
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <label htmlFor="languageFilter" className="text-sm font-medium">
-            Filtrer par langue
-          </label>
-          <select
-            id="languageFilter"
-            value={languageFilter}
-            onChange={e => setLanguageFilter(e.target.value)}
-            className="text-sm border border-gray-300 rounded px-2 py-2"
-            aria-label="Sélectionner une langue"
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">Gestion des Cours</h1>
+          <button
+            onClick={() => openModal()}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center gap-2"
           >
-            <option value="all">Toutes les langues</option>
-            {languages.map(lang => (
-              <option key={lang} value={lang}>{lang}</option>
-            ))}
-          </select>
+            <Plus size={18} /> Ajouter un cours
+          </button>
+        </div>
+
+        <input
+          type="text"
+          placeholder="Recherche par titre ou langue"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border p-2 rounded w-full mb-4"
+        />
+
+        <select
+          value={languageFilter}
+          onChange={(e) => setLanguageFilter(e.target.value)}
+          className="border p-2 rounded mb-4"
+        >
+          <option value="all">Toutes les langues</option>
+          {languages.map((lang) => (
+            <option key={lang} value={lang}>
+              {lang}
+            </option>
+          ))}
+        </select>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredCourses.map((course) => (
+            <div key={course.id} className="border p-4 rounded shadow">
+              <h2 className="text-xl font-semibold">{course.title}</h2>
+              <p className="text-gray-600">{course.language}</p>
+              <p className={`text-sm ${course.active ? "text-green-600" : "text-red-600"}`}>
+                {course.active ? "Actif" : "Inactif"}
+              </p>
+              <div className="flex gap-2 mt-2">
+                <button onClick={() => openModal(course)} className="text-blue-600">
+                  <Pencil size={18} />
+                </button>
+                <button onClick={() => setShowDeleteConfirm(course.id)} className="text-red-600">
+                  <Trash2 size={18} />
+                </button>
+                <button onClick={() => toggleActiveStatus(course.id)} className="text-gray-600">
+                  Toggle
+                </button>
+              </div>
+              {showDeleteConfirm === course.id && (
+                <div className="mt-2">
+                  <p>Confirmer la suppression ?</p>
+                  <button onClick={() => deleteCourse(course.id)} className="text-red-600 mr-2">
+                    Oui
+                  </button>
+                  <button onClick={() => setShowDeleteConfirm(null)} className="text-gray-600">
+                    Non
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full table-auto border border-gray-200 rounded-xl overflow-hidden">
-          <thead className="bg-gray-100 text-left text-sm">
-            <tr>
-              <th className="px-4 py-2">Titre</th>
-              <th className="px-4 py-2">Langue</th>
-              <th className="px-4 py-2">Statut</th>
-              <th className="px-4 py-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm divide-y">
-            {filteredCourses.map((course) => (
-              <tr key={course.id} className={!course.active ? "opacity-50" : ""}>
-                <td className="px-4 py-2">{course.title}</td>
-                <td className="px-4 py-2">
-                  <span 
-                    className="inline-block px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                    role="status"
-                    aria-label={`Langue: ${course.language}`}
-                  >
-                    {course.language}
-                  </span>
-                </td>
-                <td className="px-4 py-2">
-                  <span 
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                      course.active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
-                    }`}
-                    role="status"
-                    aria-label={`Statut: ${course.active ? "Actif" : "Inactif"}`}
-                  >
-                    {course.active ? "Actif" : "Inactif"}
-                  </span>
-                </td>
-                <td className="px-4 py-2 space-x-2">
-                  <button
-                    onClick={() => openModal(course)}
-                    className="text-blue-600 hover:text-blue-800"
-                    aria-label={`Modifier le cours ${course.title}`}
-                    title="Modifier"
-                  >
-                    <Pencil size={16} />
-                  </button>
-                  <button
-                    onClick={() => toggleActiveStatus(course.id)}
-                    className="text-yellow-600 hover:text-yellow-800"
-                    aria-label={course.active ? "Désactiver le cours" : "Activer le cours"}
-                    title={course.active ? "Désactiver" : "Activer"}
-                  >
-                    {course.active ? "Désactiver" : "Activer"}
-                  </button>
-                  {showDeleteConfirm === course.id ? (
-                    <div className="inline-flex gap-2" role="group" aria-label="Confirmation de suppression">
-                      <button
-                        onClick={() => deleteCourse(course.id)}
-                        className="text-red-600 hover:text-red-800"
-                        aria-label="Confirmer la suppression"
-                      >
-                        Confirmer
-                      </button>
-                      <button
-                        onClick={() => setShowDeleteConfirm(null)}
-                        className="text-gray-600 hover:text-gray-800"
-                        aria-label="Annuler la suppression"
-                      >
-                        Annuler
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setShowDeleteConfirm(course.id)}
-                      className="text-red-600 hover:text-red-800"
-                      aria-label={`Supprimer le cours ${course.title}`}
-                      title="Supprimer"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-
-            {filteredCourses.length === 0 && (
-              <tr>
-                <td colSpan={4} className="px-4 py-6 text-center text-gray-500">
-                  Aucun cours trouvé
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <Dialog
-        open={isOpen}
-        onClose={closeModal}
-        className="fixed z-50 inset-0 flex items-center justify-center"
-      >
-        {/* Overlay */}
-        <div className="fixed inset-0 bg-black/40" aria-hidden="true" />
-
-        <Dialog.Panel className="relative bg-white p-6 rounded-xl w-[90%] max-w-md z-50 shadow-lg">
-          <Dialog.Title className="text-xl font-semibold mb-4">
-            {editingCourse ? "Modifier un cours" : "Ajouter un cours"}
-          </Dialog.Title>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-            <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="title">
-                Titre <span className="text-red-600">*</span>
-              </label>
-              <input
-                id="title"
-                type="text"
-                {...register("title", { required: "Le titre est requis" })}
-                className={`w-full border rounded px-3 py-2 ${
-                  errors.title ? "border-red-500" : "border-gray-300"
-                }`}
-                autoComplete="off"
-              />
-              {errors.title && (
-                <p className="text-red-600 text-xs mt-1">{errors.title.message}</p>
-              )}
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1" htmlFor="language">
-                Langue <span className="text-red-600">*</span>
-              </label>
-              <input
-                id="language"
-                type="text"
-                {...register("language", { required: "La langue est requise" })}
-                className={`w-full border rounded px-3 py-2 ${
-                  errors.language ? "border-red-500" : "border-gray-300"
-                }`}
-                autoComplete="off"
-              />
-              {errors.language && (
-                <p className="text-red-600 text-xs mt-1">{errors.language.message}</p>
-              )}
-            </div>
-            <div className="flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={closeModal}
-                className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
-              >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-              >
-                {editingCourse ? "Modifier" : "Ajouter"}
-              </button>
-            </div>
-          </form>
-        </Dialog.Panel>
+      {/* Modal */}
+      <Dialog open={isOpen} onClose={closeModal} className="relative z-50">
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="bg-white p-6 rounded w-full max-w-md space-y-4">
+            <Dialog.Title className="text-lg font-bold">
+              {editingCourse ? "Modifier le cours" : "Ajouter un cours"}
+            </Dialog.Title>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div>
+                <label className="block mb-1">Titre</label>
+                <input
+                  type="text"
+                  {...register("title", { required: true })}
+                  className="border p-2 w-full rounded"
+                />
+                {errors.title && <p className="text-red-500 text-sm">Le titre est requis</p>}
+              </div>
+              <div>
+                <label className="block mb-1">Langue</label>
+                <input
+                  type="text"
+                  {...register("language", { required: true })}
+                  className="border p-2 w-full rounded"
+                />
+                {errors.language && <p className="text-red-500 text-sm">La langue est requise</p>}
+              </div>
+              <div className="flex justify-end gap-2">
+                <button type="button" onClick={closeModal} className="px-4 py-2 border rounded">
+                  Annuler
+                </button>
+                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
+                  {editingCourse ? "Enregistrer" : "Ajouter"}
+                </button>
+              </div>
+            </form>
+          </Dialog.Panel>
+        </div>
       </Dialog>
     </AdminLayout>
   );

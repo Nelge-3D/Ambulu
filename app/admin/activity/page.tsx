@@ -19,7 +19,7 @@ import {
 const COLORS = ["#34d399", "#60a5fa", "#f59e0b"];
 
 const activityData = [
-  { day: "Lun", users: 120},
+  { day: "Lun", users: 120 },
   { day: "Mar", users: 200 },
   { day: "Mer", users: 150 },
   { day: "Jeu", users: 80 },
@@ -53,67 +53,99 @@ const logs = [
 export default function ActivityPage() {
   return (
     <AdminLayout>
-      <h1 className="text-3xl font-bold mb-6">Statistiques d&apos;activité</h1>
+      <div className="px-4 sm:px-6 lg:px-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center md:text-left">
+          Statistiques d&apos;activité
+        </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <div className="bg-white p-4 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold mb-2">Utilisateurs actifs</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={activityData}>
-              <XAxis dataKey="day" />
-              <YAxis />
-              <Tooltip />
-              <Area type="monotone" dataKey="users" stroke="#34d399" fill="#bbf7d0" />
-            </AreaChart>
-          </ResponsiveContainer>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          {/* Utilisateurs actifs */}
+          <div className="bg-white p-4 rounded-xl shadow-md">
+            <h2 className="text-lg font-semibold mb-2">Utilisateurs actifs</h2>
+            <div className="w-full h-[250px] sm:h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={activityData}>
+                  <XAxis dataKey="day" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area
+                    type="monotone"
+                    dataKey="users"
+                    stroke="#34d399"
+                    fill="#bbf7d0"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Langues les plus apprises */}
+          <div className="bg-white p-4 rounded-xl shadow-md">
+            <h2 className="text-lg font-semibold mb-2">Langues les plus apprises</h2>
+            <div className="w-full h-[250px] sm:h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={languageData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    label
+                  >
+                    {languageData.map((_, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Legend verticalAlign="bottom" height={36} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
         </div>
 
-        <div className="bg-white p-4 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold mb-2">Langues les plus apprises</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={languageData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label
-              >
-                {languageData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Progression globale */}
+          <div className="bg-white p-4 rounded-xl shadow-md">
+            <h2 className="text-lg font-semibold mb-2">
+              Progression globale des utilisateurs
+            </h2>
+            <div className="w-full h-[250px] sm:h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={progressionData}>
+                  <XAxis dataKey="week" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey="score"
+                    stroke="#60a5fa"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-4 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold mb-2">Progression globale des utilisateurs</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={progressionData}>
-              <XAxis dataKey="week" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="score" stroke="#60a5fa" />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl shadow-md">
-          <h2 className="text-lg font-semibold mb-2">Logs récents</h2>
-          <ul className="space-y-2 text-sm">
-            {logs.map((log) => (
-              <li key={log.id} className="flex justify-between border-b pb-1 last:border-b-0">
-                <span>{log.message}</span>
-                <span className="text-gray-500">{log.date}</span>
-              </li>
-            ))}
-          </ul>
+          {/* Logs récents */}
+          <div className="bg-white p-4 rounded-xl shadow-md">
+            <h2 className="text-lg font-semibold mb-2">Logs récents</h2>
+            <ul className="space-y-2 text-sm">
+              {logs.map((log) => (
+                <li
+                  key={log.id}
+                  className="flex justify-between border-b pb-1 last:border-b-0"
+                >
+                  <span>{log.message}</span>
+                  <span className="text-gray-500">{log.date}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </AdminLayout>
