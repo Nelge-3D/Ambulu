@@ -1,0 +1,72 @@
+/* Styles pour les langues */
+.fangColor {
+  color: #5E9A8C;
+}
+
+.fangDarkColor {
+  color: #245d47;
+}
+
+.nzebiColor {
+  color: #8C5E9A;
+}
+
+.nzebiDarkColor {
+  color: #5d2457;
+}
+
+.tekeColor {
+  color: #9A8C5E;
+}
+
+.tekeDarkColor {
+  color: #5d4724;
+}
+
+/* Styles pour les éléments dynamiques */
+.languageSelect {
+  color: var(--language-color);
+}
+
+.languageBorder {
+  border-color: var(--language-dark-color);
+}
+
+.languageBg {
+  background-color: var(--language-color);
+}
+
+.languageText {
+  color: var(--language-dark-color);
+}
+
+/* Styles pour les boutons */
+.navButton {
+  background-color: var(--language-color);
+  color: white;
+}
+
+.navButton:hover {
+  opacity: 0.9;
+}
+
+/* Styles pour les titres */
+.languageTitle {
+  color: var(--language-dark-color);
+}
+
+/* Styles pour les badges */
+.languageBadge {
+  color: var(--language-dark-color);
+}
+
+/* Styles pour les liens */
+.languageLink {
+  color: var(--language-dark-color);
+  border-color: var(--language-dark-color);
+}
+
+.languageLinkBg {
+  background-color: var(--language-color);
+  color: white;
+} 

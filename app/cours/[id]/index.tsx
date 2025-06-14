@@ -1,5 +1,9 @@
+import React from 'react'
+
 export default function CourseDetailPage() {
-    return (
-        <div>course detail page</div>
-    );
+  return (
+    <div>
+      {/* Contenu de la page de détail du cours */}
+    </div>
+  )
 }

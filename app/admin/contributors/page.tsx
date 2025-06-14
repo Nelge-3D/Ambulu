@@ -10,7 +10,7 @@ interface Contributor {
   id: number;
   name: string;
   email: string;
-  role: "contributeur" | "admin";
+  role: "contributeur" | "admin" | "superadmin";
   active: boolean;
 }
 
@@ -25,7 +25,7 @@ export default function ContributorsPage() {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
   const [isOpen, setIsOpen] = useState(false);
   const [editingContributor, setEditingContributor] = useState<Contributor | null>(null);
-  const { register, handleSubmit, reset } = useForm<Contributor>();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<Contributor>();
 
   const filteredContributors = contributors.filter(c => {
     const matchesSearch =
@@ -125,6 +125,8 @@ export default function ContributorsPage() {
                     className={`inline-block px-2 py-1 rounded-full text-xs font-medium text-white ${
                       contributor.role === "admin"
                         ? "bg-red-600"
+                        : contributor.role === "superadmin"
+                        ? "bg-purple-600"
                         : "bg-blue-600"
                     }`}
                   >
@@ -138,18 +140,24 @@ export default function ContributorsPage() {
                   <button
                     onClick={() => openModal(contributor)}
                     className="text-blue-600 hover:text-blue-800"
+                    aria-label={`Modifier le contributeur ${contributor.name}`}
+                    title="Modifier"
                   >
                     <Pencil size={16} />
                   </button>
                   <button
                     onClick={() => toggleActiveStatus(contributor.id)}
                     className="text-yellow-600 hover:text-yellow-800"
+                    aria-label={contributor.active ? "Désactiver le contributeur" : "Activer le contributeur"}
+                    title={contributor.active ? "Désactiver" : "Activer"}
                   >
                     {contributor.active ? "Désactiver" : "Activer"}
                   </button>
                   <button
                     onClick={() => deleteContributor(contributor.id)}
                     className="text-red-600 hover:text-red-800"
+                    aria-label={`Supprimer le contributeur ${contributor.name}`}
+                    title="Supprimer"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -185,11 +193,15 @@ export default function ContributorsPage() {
               </label>
               <select
                 id="role"
-                {...register("role")}
-                className="w-full border border-gray-300 rounded px-3 py-2"
+                {...register("role", { required: "Le rôle est requis" })}
+                className={`w-full border rounded px-3 py-2 ${
+                  errors.role ? "border-red-500" : "border-gray-300"
+                }`}
+                aria-label="Sélectionner un rôle"
+                title="Sélectionner un rôle"
               >
                 <option value="contributeur">Contributeur</option>
-                <option value="admin">Admin</option>
+                <option value="admin">Administrateur</option>
                 <option value="superadmin">Super Admin</option>
               </select>
             </div>
