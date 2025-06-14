@@ -7,6 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const menuItems = [
+  { label: "Cours", href: "/cours" },
+  { label: "Dictionnaire", href: "/dictionnaire" },
+  { label: "Connexion", href: "auth/login" },
+];
+
+
   // Bloquer le scroll quand drawer est ouvert
   useEffect(() => {
     if (isOpen) {
@@ -45,16 +52,14 @@ export default function Header() {
 
         {/* Menu Desktop */}
         <nav className="hidden md:flex space-x-6 text-black">
-          {['Cours', 'Dictionnaire', 'Connexion'].map(label => (
+          {menuItems.map(({ label, href }) => (
             <a
               key={label}
-              href={`#${label.toLowerCase()}`}
-              className="relative inline-flex items-center gap-2 overflow-hidden px-4 py-2 rounded text-lg text-neutral-900 bg-white  group transition-all duration-300 hover:text-white"
+              href={href}
+              className="relative inline-flex items-center gap-2 overflow-hidden px-4 py-2 rounded text-lg text-neutral-900 bg-white group transition-all duration-300 hover:text-white"
             >
               <span className="relative z-10">{label}</span>
-              <span
-                className="absolute left-0 top-0 h-full w-0 bg-green-800 transition-all duration-500 ease-in-out group-hover:w-full z-0"
-              />
+              <span className="absolute left-0 top-0 h-full w-0 bg-green-800 transition-all duration-500 ease-in-out group-hover:w-full z-0" />
             </a>
           ))}
         </nav>
@@ -91,20 +96,19 @@ export default function Header() {
                 </button>
               </div>
               <nav className="flex flex-col space-y-4 text-lg text-black">
-                {['Cours', 'Dictionnaire', 'Connexion'].map(label => (
+                {menuItems.map(({ label, href }) => (
                   <a
                     key={label}
-                    href={`#${label.toLowerCase()}`}
+                    href={href}
                     onClick={() => setIsOpen(false)}
                     className="relative inline-flex items-center gap-2 overflow-hidden px-4 py-2 rounded-full text-lg text-white bg-green-700 border-2 border-primary group transition-all duration-300 hover:text-white"
                   >
                     <span className="relative z-10">{label}</span>
-                    <span
-                      className="absolute left-0 top-0 h-full w-0 bg-green-800 transition-all duration-500 ease-in-out group-hover:w-full z-0"
-                    />
+                    <span className="absolute left-0 top-0 h-full w-0 bg-green-800 transition-all duration-500 ease-in-out group-hover:w-full z-0" />
                   </a>
                 ))}
               </nav>
+
             </motion.div>
           </motion.div>
         )}
