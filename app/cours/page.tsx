@@ -1,5 +1,5 @@
-export default function page () {
-    return [
+export default function CoursesPage() {
+    return (
         <div>cours page</div>
-    ]
+    );
 }

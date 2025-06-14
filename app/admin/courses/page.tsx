@@ -10,24 +10,34 @@ interface Course {
   id: number;
   title: string;
   language: string;
+  active: boolean;
 }
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([
-    { id: 1, title: "Introduction au Fang", language: "Fang" },
-    { id: 2, title: "Grammaire Nzebi", language: "Nzebi" },
-    { id: 3, title: "Expressions courantes en Teke", language: "Teke" },
+    { id: 1, title: "Introduction au Fang", language: "Fang", active: true },
+    { id: 2, title: "Grammaire Nzebi", language: "Nzebi", active: true },
+    { id: 3, title: "Expressions courantes en Teke", language: "Teke", active: true },
   ]);
 
   const [search, setSearch] = useState("");
+  const [languageFilter, setLanguageFilter] = useState<string>("all");
   const [isOpen, setIsOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<number | null>(null);
   const { register, handleSubmit, reset, formState: { errors }, setFocus } = useForm<Course>();
 
-  const filteredCourses = courses.filter(course =>
-    course.title.toLowerCase().includes(search.toLowerCase()) ||
-    course.language.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredCourses = courses.filter(course => {
+    const matchesSearch =
+      course.title.toLowerCase().includes(search.toLowerCase()) ||
+      course.language.toLowerCase().includes(search.toLowerCase());
+    
+    const matchesLanguage = languageFilter === "all" || course.language === languageFilter;
+    
+    return matchesSearch && matchesLanguage;
+  });
+
+  const languages = Array.from(new Set(courses.map(course => course.language)));
 
   const onSubmit = (data: Course) => {
     if (editingCourse) {
@@ -35,7 +45,7 @@ export default function CoursesPage() {
         prev.map(c => (c.id === editingCourse.id ? { ...c, ...data } : c))
       );
     } else {
-      setCourses(prev => [...prev, { ...data, id: Date.now() }]);
+      setCourses(prev => [...prev, { ...data, id: Date.now(), active: true }]);
     }
     closeModal();
   };
@@ -46,7 +56,7 @@ export default function CoursesPage() {
       reset(course);
     } else {
       setEditingCourse(null);
-      reset({ title: "", language: "" });
+      reset({ title: "", language: "", active: true });
     }
     setIsOpen(true);
   };
@@ -57,16 +67,21 @@ export default function CoursesPage() {
     reset();
   };
 
+  const toggleActiveStatus = (id: number) => {
+    setCourses(prev =>
+      prev.map(c => (c.id === id ? { ...c, active: !c.active } : c))
+    );
+  };
+
+  const deleteCourse = (id: number) => {
+    setCourses(prev => prev.filter(c => c.id !== id));
+    setShowDeleteConfirm(null);
+  };
+
   // Focus le premier champ quand la modale s'ouvre
   useEffect(() => {
     if (isOpen) setFocus("title");
   }, [isOpen, setFocus]);
-
-  const deleteCourse = (id: number) => {
-    if (confirm("Voulez-vous vraiment supprimer ce cours ?")) {
-      setCourses(prev => prev.filter(c => c.id !== id));
-    }
-  };
 
   return (
     <AdminLayout>
@@ -80,15 +95,36 @@ export default function CoursesPage() {
         </button>
       </div>
 
-      <div className="mb-4 flex items-center gap-2">
-        <Search className="text-gray-500" size={18} />
-        <input
-          type="text"
-          placeholder="Rechercher un cours..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
-        />
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <div className="flex items-center gap-2 flex-1">
+          <Search className="text-gray-500" size={18} />
+          <input
+            type="text"
+            placeholder="Rechercher un cours..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+            aria-label="Rechercher un cours"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <label htmlFor="languageFilter" className="text-sm font-medium">
+            Filtrer par langue
+          </label>
+          <select
+            id="languageFilter"
+            value={languageFilter}
+            onChange={e => setLanguageFilter(e.target.value)}
+            className="text-sm border border-gray-300 rounded px-2 py-2"
+            aria-label="Sélectionner une langue"
+          >
+            <option value="all">Toutes les langues</option>
+            {languages.map(lang => (
+              <option key={lang} value={lang}>{lang}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -97,36 +133,85 @@ export default function CoursesPage() {
             <tr>
               <th className="px-4 py-2">Titre</th>
               <th className="px-4 py-2">Langue</th>
+              <th className="px-4 py-2">Statut</th>
               <th className="px-4 py-2">Actions</th>
             </tr>
           </thead>
           <tbody className="text-sm divide-y">
             {filteredCourses.map((course) => (
-              <tr key={course.id}>
+              <tr key={course.id} className={!course.active ? "opacity-50" : ""}>
                 <td className="px-4 py-2">{course.title}</td>
-                <td className="px-4 py-2">{course.language}</td>
+                <td className="px-4 py-2">
+                  <span 
+                    className="inline-block px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                    role="status"
+                    aria-label={`Langue: ${course.language}`}
+                  >
+                    {course.language}
+                  </span>
+                </td>
+                <td className="px-4 py-2">
+                  <span 
+                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                      course.active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                    }`}
+                    role="status"
+                    aria-label={`Statut: ${course.active ? "Actif" : "Inactif"}`}
+                  >
+                    {course.active ? "Actif" : "Inactif"}
+                  </span>
+                </td>
                 <td className="px-4 py-2 space-x-2">
                   <button
                     onClick={() => openModal(course)}
                     className="text-blue-600 hover:text-blue-800"
                     aria-label={`Modifier le cours ${course.title}`}
+                    title="Modifier"
                   >
                     <Pencil size={16} />
                   </button>
                   <button
-                    onClick={() => deleteCourse(course.id)}
-                    className="text-red-600 hover:text-red-800"
-                    aria-label={`Supprimer le cours ${course.title}`}
+                    onClick={() => toggleActiveStatus(course.id)}
+                    className="text-yellow-600 hover:text-yellow-800"
+                    aria-label={course.active ? "Désactiver le cours" : "Activer le cours"}
+                    title={course.active ? "Désactiver" : "Activer"}
                   >
-                    <Trash2 size={16} />
+                    {course.active ? "Désactiver" : "Activer"}
                   </button>
+                  {showDeleteConfirm === course.id ? (
+                    <div className="inline-flex gap-2" role="group" aria-label="Confirmation de suppression">
+                      <button
+                        onClick={() => deleteCourse(course.id)}
+                        className="text-red-600 hover:text-red-800"
+                        aria-label="Confirmer la suppression"
+                      >
+                        Confirmer
+                      </button>
+                      <button
+                        onClick={() => setShowDeleteConfirm(null)}
+                        className="text-gray-600 hover:text-gray-800"
+                        aria-label="Annuler la suppression"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setShowDeleteConfirm(course.id)}
+                      className="text-red-600 hover:text-red-800"
+                      aria-label={`Supprimer le cours ${course.title}`}
+                      title="Supprimer"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
 
             {filteredCourses.length === 0 && (
               <tr>
-                <td colSpan={3} className="px-4 py-6 text-center text-gray-500">
+                <td colSpan={4} className="px-4 py-6 text-center text-gray-500">
                   Aucun cours trouvé
                 </td>
               </tr>

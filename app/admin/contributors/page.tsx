@@ -123,11 +123,9 @@ export default function ContributorsPage() {
                 <td className="px-4 py-2 capitalize">
                   <span
                     className={`inline-block px-2 py-1 rounded-full text-xs font-medium text-white ${
-                      contributor.role === "superadmin"
+                      contributor.role === "admin"
                         ? "bg-red-600"
-                        : contributor.role === "admin"
-                        ? "bg-blue-600"
-                        : "bg-green-600"
+                        : "bg-blue-600"
                     }`}
                   >
                     {contributor.role}
