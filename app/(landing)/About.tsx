@@ -1,8 +1,7 @@
 "use client";
 
-import { FC } from "react";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { FC, useRef } from "react";
+import { motion, useInView, easeInOut } from "framer-motion";
 
 const AboutSection: FC = () => {
   const ref = useRef(null);
@@ -14,18 +13,21 @@ const AboutSection: FC = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.3
-      }
-    }
+        delayChildren: 0.3,
+      },
+    },
   };
 
   const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
+      transition: {
+        duration: 0.6,
+        ease: easeInOut, // ✅ easing corrigé
+      },
+    },
   };
 
   return (
@@ -47,7 +49,7 @@ const AboutSection: FC = () => {
           variants={itemVariants}
         >
           À propos de{" "}
-          <motion.span 
+          <motion.span
             className="text-green-700 relative inline-block"
             variants={itemVariants}
           >
@@ -56,7 +58,11 @@ const AboutSection: FC = () => {
               className="absolute -bottom-2 left-0 w-full h-1 bg-green-200"
               initial={{ scaleX: 0 }}
               animate={isInView ? { scaleX: 1 } : {}}
-              transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+              transition={{
+                delay: 0.8,
+                duration: 0.8,
+                ease: easeInOut, // ✅ correction ici aussi
+              }}
             />
           </motion.span>
         </motion.h2>
@@ -68,9 +74,9 @@ const AboutSection: FC = () => {
               variants={itemVariants}
             >
               Notre <span className="font-semibold text-green-700">mission</span> est de{" "}
-              <span className="highlight-text">préserver et transmettre</span> les langues 
-              vernaculaires d&apos;Afrique centrale. Grâce à une plateforme moderne et ludique, 
-              nous offrons aux jeunes générations un moyen simple d&apos;apprendre, pratiquer et 
+              <span className="highlight-text">préserver et transmettre</span> les langues
+              vernaculaires d&apos;Afrique centrale. Grâce à une plateforme moderne et ludique,
+              nous offrons aux jeunes générations un moyen simple d&apos;apprendre, pratiquer et
               partager leur héritage linguistique.
             </motion.p>
           </motion.div>
@@ -81,14 +87,14 @@ const AboutSection: FC = () => {
               variants={itemVariants}
             >
               Notre <span className="font-semibold text-green-700">vision</span> est un monde où{" "}
-              <span className="highlight-text">chaque langue</span>, même minoritaire, peut 
-              continuer de vivre à travers les technologies modernes, la culture et 
+              <span className="highlight-text">chaque langue</span>, même minoritaire, peut
+              continuer de vivre à travers les technologies modernes, la culture et
               l&apos;éducation.
             </motion.p>
           </motion.div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="mt-12 md:mt-16 flex flex-wrap justify-center gap-4 md:gap-6"
           variants={itemVariants}
         >
