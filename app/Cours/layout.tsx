@@ -1,4 +1,8 @@
 import type { Metadata } from "next";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/app/Cours/components/app-sidebar"
+ 
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -11,8 +15,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <main>
+
+    <SidebarProvider>
+       <AppSidebar />
+      <main className="flex min-h-screen flex-col w-full">
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <SidebarTrigger/>
+        
         {children}
       </main>
+      </SidebarProvider>
   );
 }

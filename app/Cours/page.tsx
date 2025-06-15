@@ -1,23 +1,23 @@
+
+
 "use client";
-import React, { useState} from "react";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-
 import FangGreetingQuiz from "./components/FangGreetingQuiz";
 import NzebiGreetingQuiz from "./components/NzebiGreetingQuiz";
 import TekeGreetingQuiz from "./components/TekeGreetingQuiz";
 
-
 const languages = ['fang', 'nzebi', 'teke'] as const;
 export type Language = typeof languages[number];
-
 
 const languageData: Record<Language, {
   name: string;
   greeting: { french: string; translation: string; emoji: string }[];
   color: string;
   darkColor: string;
-quiz: React.ComponentType<unknown>;
+  quiz: React.ComponentType<unknown>;
 }> = {
   fang: {
     name: "Fang",
@@ -41,8 +41,8 @@ quiz: React.ComponentType<unknown>;
       { french: "Merci", translation: "Ndongui", emoji: "🙏" },
       { french: "Au revoir", translation: "Kende malamu", emoji: "👋" }
     ],
-    color: "#8C5E9A",
-    darkColor: "#5d2457",
+    color: "green",
+    darkColor: "green",
     quiz: NzebiGreetingQuiz
   },
   teke: {
@@ -54,71 +54,64 @@ quiz: React.ComponentType<unknown>;
       { french: "Merci", translation: "Matondi", emoji: "🙏" },
       { french: "Bienvenue", translation: "Boyei malamu", emoji: "👐" }
     ],
-    color: "#9A8C5E",
-    darkColor: "#5d4724",
+    color: "#166534",
+    darkColor: "#166534",
     quiz: TekeGreetingQuiz
   }
 };
 
+// Création des données du carrousel selon la langue
 const getCarouselData = (language: Language) => {
   const langData = languageData[language];
 
   return [
-    // Carousel 1 - Bienvenue
+    // Bienvenue + Introduction
     {
+      title: (
+        <motion.h2
+          className="text-3xl sm:text-4xl font-bold italic"
+          style={{ color: langData.color }}
+          initial={{ scale: 0.9 }}
+          animate={{
+            scale: [1, 1.05, 1],
+            rotate: [0, -2, 0]
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          {(langData.greeting[0]?.translation ?? "")} ! 👋
+        </motion.h2>
+      ),
       content: (
         <motion.div
-          className="flex flex-col md:flex-row items-center justify-between gap-20 mt-4 px-4"
+          className="flex flex-col items-center md:flex-row gap-8 text-left"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8 }}
         >
-          <motion.div
-            className="md:w-1/2 text-left"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.8 }}
-          >
-            <motion.h2
-              className="text-5xl font-bold italic mb-6"
-              style={{ color: langData.color }}
-              initial={{ scale: 0.9 }}
-              animate={{
-                scale: [1, 1.05, 1],
-                rotate: [0, -2, 0]
-              }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+          <div className="md:w-1/2">
+            <motion.p
+              className="text-lg leading-relaxed mb-4"
+              initial={{ y: 20 }}
+              animate={{ y: 0 }}
             >
-              {(langData.greeting[0]?.translation ?? "")} ! 👋
-            </motion.h2>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, staggerChildren: 0.1 }}
+              <strong style={{ color: langData.darkColor }}>Bienvenue !</strong> Aujourd&lsquo;hui, vous allez découvrir vos premiers mots en{" "}
+              {langData.name.toLowerCase()}.
+            </motion.p>
+            <motion.p
+              className="text-lg leading-relaxed"
+              initial={{ y: 20 }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.2 }}
             >
-              <motion.p
-                className="text-lg leading-relaxed mb-4"
-                initial={{ y: 20 }}
-                animate={{ y: 0 }}
-              >
-                <strong style={{ color: langData.darkColor }}>Bienvenue !</strong> Aujourd&lsquo;hui, vous allez découvrir vos premiers mots en {langData.name.toLowerCase()}.
-              </motion.p>
-              <motion.p
-                className="text-lg leading-relaxed"
-                initial={{ y: 20 }}
-                animate={{ y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <em>Nous allons commencer par les salutations de base</em> - un excellent point de départ pour engager une conversation simple et chaleureuse.
-              </motion.p>
-            </motion.div>
-          </motion.div>
+              <em>Nous allons commencer par les salutations de base</em> – un excellent point de départ pour engager une conversation simple et chaleureuse.
+            </motion.p>
+          </div>
           <motion.div
-            className="md:w-1/2 flex justify-center"
+            className="md:w-1/2 w-full max-w-md mx-auto"
             initial={{ scale: 0.8, opacity: 0, rotate: -5 }}
             animate={{
               scale: 1,
@@ -134,18 +127,19 @@ const getCarouselData = (language: Language) => {
             <motion.img
               src="/ice.svg"
               alt={`Illustration de salutation en ${langData.name}`}
-              className="w-full max-w-[800px] lg:max-w-[1000px] rounded-lg shadow-xl"
+              className="w-full rounded-lg shadow-xl"
               whileHover={{ scale: 1.02 }}
               transition={{ type: "spring", stiffness: 400 }}
             />
           </motion.div>
         </motion.div>
-      ),
+      )
     },
-    // Carousel 2 - Salutations
+    // Salutations
     {
       title: (
         <motion.div
+          className="text-center text-xl sm:text-2xl font-semibold"
           style={{ color: langData.darkColor }}
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -156,39 +150,27 @@ const getCarouselData = (language: Language) => {
       ),
       content: (
         <motion.div
-          className="space-y-6 max-w-2xl mx-auto"
+          className="space-y-6 max-w-xl mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
-          <motion.p
-            className="text-center font-semibold text-2xl mb-6"
-            style={{ color: langData.color }}
-            initial={{ y: -20 }}
-            animate={{ y: 0 }}
-            transition={{ type: "spring", stiffness: 100 }}
-          >
-            Bases des salutations
-          </motion.p>
-          <motion.ul
-            className="list-disc list-inside text-left space-y-3 text-lg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ staggerChildren: 0.1 }}
-          >
-            {langData.greeting.map((item, index) => (
+          <ul className="list-disc list-inside text-left space-y-3 text-base sm:text-lg">
+            {langData.greeting.map((item, idx) => (
               <motion.li
-                key={index}
-                className="flex items-start"
+                key={idx}
+                className="flex items-start gap-2"
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 100 }}
                 whileHover={{ x: 5 }}
               >
-                <span className="mr-2 text-xl">{item.emoji}</span>
+                <span className="text-xl">{item.emoji}</span>
                 <div>
                   <strong style={{ color: langData.darkColor }}>{item.french} :</strong>
-                  <span className="ml-2 font-bold" style={{ color: langData.darkColor }}>{item.translation}</span>
+                  <span className="ml-2 font-bold" style={{ color: langData.darkColor }}>
+                    {item.translation}
+                  </span>
                   <motion.span
                     className="ml-2 text-blue-500 cursor-pointer inline-block"
                     whileHover={{ scale: 1.2 }}
@@ -199,17 +181,12 @@ const getCarouselData = (language: Language) => {
                 </div>
               </motion.li>
             ))}
-          </motion.ul>
-          <motion.p
-            className="italic text-center text-gray-600 mt-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            Note : le ton et l&lsquo;intonation sont <strong>cruciaux</strong> en {langData.name} !
-          </motion.p>
+          </ul>
+          <p className="italic text-sm sm:text-base text-gray-600 mt-4 text-center">
+            Note : le ton et l&lsquo;intonation sont <strong>cruciaux</strong> en {langData.name}.
+          </p>
           <motion.div
-            className="relative my-6"
+            className="relative my-4"
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
             transition={{ duration: 0.8 }}
@@ -224,34 +201,26 @@ const getCarouselData = (language: Language) => {
             {React.createElement(langData.quiz)}
           </motion.div>
           <motion.div
-            className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200"
+            className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200"
             whileHover={{ y: -5 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-            <p className="text-center font-medium text-blue-800">
-              💡 Astuce : Accompagnez toujours vos salutations d&lsquo;un sourire et d&lsquo;un contact visuel !
+            <p className="text-center font-medium text-blue-800 text-sm sm:text-base">
+              💡 Astuce : Accompagnez toujours vos salutations d’un sourire et d’un contact visuel !
             </p>
           </motion.div>
         </motion.div>
       )
     },
-    // Carousel 3 - Vocabulaire essentiel
+    // Vocabulaire essentiel
     {
       title: (
-        <motion.div
-          className="flex items-center justify-center gap-3"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100 }}
+        <motion.h3
+          className="text-xl sm:text-2xl font-semibold text-center"
+          style={{ color: langData.darkColor }}
         >
-          <motion.span
-            animate={{ rotate: [0, 15, -15, 0] }}
-            transition={{ duration: 1, repeat: Infinity, repeatDelay: 5 }}
-          >
-            📚
-          </motion.span>
-          <span>Vocabulaire Essentiel {langData.name}</span>
-        </motion.div>
+          📚 Vocabulaire Essentiel {langData.name}
+        </motion.h3>
       ),
       content: (
         <motion.div
@@ -260,189 +229,120 @@ const getCarouselData = (language: Language) => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          <motion.div
-            className="mb-8 text-lg text-gray-700 text-center"
-            initial={{ scale: 0.95 }}
-            animate={{ scale: 1 }}
-          >
-            <motion.p
-              className="mb-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              Apprenez les mots clés en {langData.name.toLowerCase()} avec notre méthode
-              <motion.span
-                className="font-bold underline decoration-wavy"
-                style={{ color: langData.darkColor }}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                {" "}Écouter - Répéter - Deviner
-              </motion.span> :
-            </motion.p>
-          </motion.div>
-          <motion.table className="w-full border-collapse rounded-2xl overflow-hidden shadow-xl mb-10">
-            <motion.thead className="bg-gradient-to-r from-blue-50 to-cyan-50" style={{ color: langData.darkColor }}>
+          <motion.table className="w-full border-collapse rounded-lg overflow-hidden shadow mb-8">
+            <thead className="bg-gradient-to-r from-blue-50 to-cyan-50" style={{ color: langData.darkColor }}>
               <tr>
-                <th className="py-4 px-5 text-left w-1/4">Français</th>
-                <th className="py-4 px-5 text-left w-1/4">{langData.name}</th>
-                <th className="py-4 px-5 text-left w-1/4">Prononciation</th>
-                <th className="py-4 px-5 w-1/4">Audio</th>
+                <th className="py-3 px-4 text-left">Français</th>
+                <th className="py-3 px-4 text-left">{langData.name}</th>
+                <th className="py-3 px-4 text-left">Audio</th>
               </tr>
-            </motion.thead>
-            <motion.tbody className="divide-y divide-gray-200">
-              {langData.greeting.map((word, index) => (
-                <motion.tr
-                  key={index}
-                  className="hover:bg-gray-50 transition-colors duration-200 group"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <td className="py-4 px-5 font-medium flex items-center">
-                    <span className="mr-3 text-xl">{word.emoji}</span>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {langData.greeting.map((word, idx) => (
+                <tr key={idx} className="hover:bg-gray-50 transition-colors duration-200">
+                  <td className="py-3 px-4 font-medium flex items-center gap-2">
+                    <span>{word.emoji}</span>
                     {word.french}
                   </td>
-                  <td className="py-4 px-5 font-bold" style={{ color: langData.darkColor }}>
+                  <td className="py-3 px-4 font-bold" style={{ color: langData.darkColor }}>
                     {word.translation}
                   </td>
-                  <td className="py-4 px-5 text-gray-600">Non disponible</td>
-                  <td className="py-4 px-5 text-center">
+                  <td className="py-3 px-4 text-center">
                     <motion.span
                       className="inline-block text-2xl cursor-pointer"
                       style={{ color: langData.darkColor }}
-                      whileHover={{ scale: 1.3 }}
+                      whileHover={{ scale: 1.2 }}
                       onClick={() => alert(`Prononciation : ${word.translation}`)}
                     >
                       🔊
                     </motion.span>
                   </td>
-                </motion.tr>
+                </tr>
               ))}
-            </motion.tbody>
+            </tbody>
           </motion.table>
         </motion.div>
       )
     },
-    // Carousel 4 - Prononciation
+    // Les nombres
     {
       title: (
         <motion.div
-          className="flex items-center justify-center gap-3"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100 }}
+          className="text-center text-xl sm:text-2xl font-semibold"
+          style={{ color: langData.darkColor }}
         >
-          <motion.span
-            animate={{ rotate: [0, 15, -15, 0] }}
-            transition={{ duration: 1, repeat: Infinity, repeatDelay: 5 }}
-          >
-            🔊
-          </motion.span>
-          <span>Maîtrisez la Prononciation {langData.name}</span>
+          🔢 Les Nombres en {langData.name}
         </motion.div>
       ),
       content: (
-        <motion.div className="max-w-2xl mx-auto">
+        <motion.div
+          className="max-w-md mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <ul className="space-y-2 text-left">
+            <li>1 - Un → <strong>{langData.greeting[0]?.translation}</strong></li>
+            <li>2 - Deux → <strong>{langData.greeting[1]?.translation}</strong></li>
+            <li>3 - Trois → <strong>{langData.greeting[2]?.translation}</strong></li>
+            <li>4 - Quatre → <strong>{langData.greeting[3]?.translation}</strong></li>
+            <li>5 - Cinq → <strong>{langData.greeting[4]?.translation}</strong></li>
+          </ul>
+        </motion.div>
+      )
+    },
+    // Exercices écrits/oraux
+    {
+      title: (
+        <motion.div
+          className="text-center text-xl sm:text-2xl font-semibold"
+          style={{ color: langData.darkColor }}
+        >
+          ✍️ Exercices Écrits et Oraux en {langData.name}
+        </motion.div>
+      ),
+      content: (
+        <motion.div
+          className="max-w-xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <motion.div
+            className="bg-white p-6 rounded-xl shadow-md mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <h3 className="text-xl font-bold mb-4">Écrivez vos premières phrases</h3>
+            <p className="mb-4">Utilisez les mots appris pour écrire une phrase simple en {langData.name}.</p>
+            <textarea
+              className="w-full p-3 border border-gray-300 rounded-md"
+              rows={4}
+              placeholder="Écrivez ici..."
+            />
+          </motion.div>
+
           <motion.div
             className="bg-white p-6 rounded-xl shadow-md"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.6 }}
           >
-            <h3 className="text-xl font-bold mb-4">Exercice audio</h3>
-            <p className="mb-4">Écoutez les prononciations suivantes en {langData.name} :</p>
-            <ul>
-              {langData.greeting.map((word, i) => (
+            <h3 className="text-xl font-bold mb-4">Exercice oral</h3>
+            <p className="mb-4">Choisissez un mot et essayez de le prononcer à haute voix :</p>
+            <ul className="list-disc pl-5 space-y-2 text-sm sm:text-base">
+              {langData.greeting.slice(0, 3).map((word, i) => (
                 <li key={i}>
-                  <button
-                    className="underline text-blue-500"
+                  <strong>{word.french}</strong> → {word.translation}{" "}
+                  <span
+                    className="text-blue-600 cursor-pointer"
                     onClick={() => alert(`Prononciation : ${word.translation}`)}
                   >
-                    {word.french} → {word.translation}
-                  </button>
+                    🔊
+                  </span>
                 </li>
               ))}
-            </ul>
-          </motion.div>
-        </motion.div>
-      )
-    },
-    // Carousel 5 - Quiz interactif
-    {
-      title: (
-        <motion.div
-          className="flex items-center justify-center gap-3"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <motion.span
-            animate={{ rotate: [0, 15, -15, 0] }}
-            transition={{ duration: 1, repeat: Infinity, repeatDelay: 5 }}
-          >
-            📝
-          </motion.span>
-          <span>Atelier d&lsquo;Évaluation {langData.name}</span>
-        </motion.div>
-      ),
-      content: (
-        <motion.div className="max-w-2xl mx-auto">
-          <motion.div
-            className="bg-white p-6 rounded-xl shadow-md"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <h3 className="text-xl font-bold mb-4">Jeu d&lsquo;association</h3>
-            <p className="mb-4">Associez les termes français aux traductions en {langData.name}.</p>
-            <ul>
-              {langData.greeting.map((word, i) => (
-                <li key={i} className="mb-2">
-                  <strong>{word.french}</strong> → <em>{word.translation}</em>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        </motion.div>
-      )
-    },
-    // Carousel 6 - Nombres
-    {
-      title: (
-        <motion.div
-          className="flex items-center justify-center gap-3"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ type: "spring", stiffness: 100 }}
-        >
-          <motion.span
-            animate={{ rotate: [0, 15, -15, 0] }}
-            transition={{ duration: 1, repeat: Infinity, repeatDelay: 5 }}
-          >
-            🔢
-          </motion.span>
-          <span>Les Nombres en {langData.name}</span>
-        </motion.div>
-      ),
-      content: (
-        <motion.div className="max-w-2xl mx-auto">
-          <motion.div
-            className="bg-white p-6 rounded-xl shadow-md"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <h3 className="text-xl font-bold mb-4">Apprendre les nombres</h3>
-            <p className="mb-4">Voici quelques nombres de base en {langData.name} :</p>
-            <ul>
-              <li>1 - Un → <strong>{langData.greeting[0]?.translation}</strong></li>
-              <li>2 - Deux → <strong>{langData.greeting[1]?.translation}</strong></li>
-              <li>3 - Trois → <strong>{langData.greeting[2]?.translation}</strong></li>
-              <li>4 - Quatre → <strong>{langData.greeting[3]?.translation}</strong></li>
-              <li>5 - Cinq → <strong>{langData.greeting[4]?.translation}</strong></li>
             </ul>
           </motion.div>
         </motion.div>
@@ -452,60 +352,53 @@ const getCarouselData = (language: Language) => {
 };
 
 export default function Page() {
-  const [index, setIndex] = useState(0);
   const [currentLanguage, setCurrentLanguage] = useState<Language>('fang');
+  const [index, setIndex] = useState(0);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleNext = () => {
     setIndex((prev) => (prev + 1) % getCarouselData(currentLanguage).length);
   };
 
   const handlePrev = () => {
-    setIndex((prev) => (prev - 1 + getCarouselData(currentLanguage).length) % getCarouselData(currentLanguage).length);
+    const len = getCarouselData(currentLanguage).length;
+    setIndex((prev) => (prev - 1 + len) % len);
   };
 
   return (
     <main className="bg-gray-50 min-h-screen font-sans">
       {/* HEADER */}
-      <header className="px-6 py-4 flex justify-between items-center shadow-sm">
-        <h1 className="text-4xl font-bold" style={{ color: languageData[currentLanguage].color }}>MBOLO</h1>
-        <div className="hidden md:flex space-x-4 items-center">
-          <select
-            value={currentLanguage}
-            onChange={(e) => {
-              setCurrentLanguage(e.target.value as Language);
-              setIndex(0);
-            }}
-            className="bg-white border border-gray-300 rounded-md px-3 py-2"
-            style={{ color: languageData[currentLanguage].darkColor }}
+      <header className="flex flex-col md:flex-row justify-between items-center p-4 bg-gray-50 ">
+        <div className="flex justify-between w-full md:w-auto">
+          
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden text-gray-700 focus:outline-none"
           >
-            {languages.map(lang => (
-              <option key={lang} value={lang} style={{ textTransform: 'capitalize' }}>
-                {languageData[lang].name}
-              </option>
-            ))}
-          </select>
-          <Link
-            href="/login"
-            className="bg-white border border-gray-800 px-6 py-3 rounded-md hover:bg-gray-50 transition"
-            style={{ color: languageData[currentLanguage].darkColor, borderColor: languageData[currentLanguage].darkColor }}
-          >
-            Connexion
-          </Link>
-          <Link
-            href="/search"
-            className="px-8 py-3 rounded-md hover:bg-opacity-80 transition"
-            style={{
-              backgroundColor: languageData[currentLanguage].color,
-              color: "white"
-            }}
-          >
-            insérer une langue
-          </Link>
+            ☰
+          </button>
         </div>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex space-x-4 items-center">
+          {renderNav()}
+        </nav>
+
+        {/* Mobile nav */}
+        {isMenuOpen && (
+          <motion.nav
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="w-full mt-4 md:hidden bg-white border-t border-gray-200 pt-2 pb-3 px-2 rounded-b-lg shadow-md flex flex-col gap-3"
+          >
+            {renderNav()}
+          </motion.nav>
+        )}
       </header>
 
-      {/* CARROUSEL */}
-      <section className="text-center px-4 py-16">
+      {/* CAROUSEL */}
+      <section className="px-4 py-8 sm:py-12">
         <AnimatePresence mode="wait">
           <motion.div
             key={`${currentLanguage}-${index}`}
@@ -513,18 +406,14 @@ export default function Page() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="max-w-2xl mx-auto"
+            className="mx-auto"
           >
-            <h3
-              className="text-2xl font-semibold mb-4"
-              style={{ color: languageData[currentLanguage].darkColor }}
-            >
-              {getCarouselData(currentLanguage)[index].title}
-            </h3>
+            {getCarouselData(currentLanguage)[index].title}
             {getCarouselData(currentLanguage)[index].content}
           </motion.div>
         </AnimatePresence>
-        <div className="flex justify-center mt-8 gap-4">
+
+        <div className="flex justify-center mt-6 gap-4">
           <button
             onClick={handlePrev}
             className="px-4 py-2 text-white rounded hover:opacity-90 transition"
@@ -543,4 +432,44 @@ export default function Page() {
       </section>
     </main>
   );
+
+  // Fonction pour afficher la navigation
+  function renderNav() {
+    return (
+      <>
+        <select
+          value={currentLanguage}
+          onChange={(e) => {
+            setCurrentLanguage(e.target.value as Language);
+            setIndex(0);
+          }}
+          className="bg-gray-50 border border-gray-300 rounded-md px-3 py-2 text-sm"
+          style={{ color: languageData[currentLanguage].darkColor }}
+        >
+          {languages.map((lang) => (
+            <option key={lang} value={lang} style={{ textTransform: "capitalize" }}>
+              {languageData[lang].name}
+            </option>
+          ))}
+        </select>
+        <Link
+          href="/login"
+          className="bg-white border border-gray-800 px-4 py-2 rounded-md hover:bg-gray-50 transition text-sm"
+          style={{ color: languageData[currentLanguage].darkColor, borderColor: languageData[currentLanguage].darkColor }}
+        >
+          Connexion
+        </Link>
+        <Link
+          href="/search"
+          className="px-6 py-2 rounded-md hover:bg-opacity-90 transition text-sm"
+          style={{
+            backgroundColor: languageData[currentLanguage].color,
+            color: "white"
+          }}
+        >
+          Insérer une langue
+        </Link>
+      </>
+    );
+  }
 }
