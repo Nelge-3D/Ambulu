@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import styles from './styles.module.css';
-import { ChevronLeft, ChevronRight } from "lucide-react";
+
 
 import FangGreetingQuiz from "./components/FangGreetingQuiz";
 import NzebiGreetingQuiz from "./components/NzebiGreetingQuiz";
