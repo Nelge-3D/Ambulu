@@ -50,11 +50,16 @@ const LanguageDemoSection: FC = () => {
   };
 
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    if (hash && ["teke", "nzebi", "fang"].includes(hash)) {
-      setActiveLang(hash.charAt(0).toUpperCase() + hash.slice(1) as Lang);
-    }
-  }, []);
+  const hash = window.location.hash.substring(1).toLowerCase();
+  const availableLangs = ["Teke", "Nzebi", "Fang"];
+  if (availableLangs.includes(hash)) {
+    setActiveLang(hash.charAt(0).toUpperCase() + hash.slice(1) as Lang);
+    // Fait aussi scroller vers la section
+    const demoSection = document.getElementById("demo");
+    demoSection?.scrollIntoView({ behavior: "smooth" });
+  }
+}, []);
+
 
   return (
     <section id="demo" className="relative w-full min-h-screen px-4 md:px-8 py-16 bg-gray-50 text-black overflow-hidden">

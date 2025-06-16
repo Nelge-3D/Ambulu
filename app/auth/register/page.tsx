@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+export default function RegisterPage() {
+    return (
+        <div>register page</div>
+    );
+}
+=======
 'use client';
 
 import Link from 'next/link';
@@ -64,3 +71,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+>>>>>>> 8ca5f80d39764fca2b35f0850dee4ddad5a4501d

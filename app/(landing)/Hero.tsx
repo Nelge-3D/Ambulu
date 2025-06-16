@@ -153,23 +153,32 @@ const ImmersiveHeader: FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
       >
-        {["Teke", "Nzebi", "Fang", "Dictionnaire", "Traduction"].map((lang) => (
-          <motion.div
-            key={lang}
-            whileHover={{ y: -3 }}
-            whileTap={{ scale: 0.95 }}
-            className="relative group"
-          >
-            <Link
-              href={`#${lang.toLowerCase()}`}
-              className={`relative z-10 px-5 py-3 text-lg font-medium rounded-full border-2 border-green-700 text-white bg-green-700 transition-colors duration-300 hover:bg-green-800 hover:border-green-800 flex items-center justify-center min-w-[120px]`}
-              aria-label={`Aller à la section ${lang}`}
+        {["Teke", "Nzebi", "Fang", "Dictionnaire", "Traduction"].map((label) => {
+          const href =
+            label === "Dictionnaire"
+              ? "/dictionnaire"
+              : label === "Traduction"
+              ? "/traduction"
+              : `#demo`;
+
+          return (
+            <motion.div
+              key={label}
+              whileHover={{ y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="relative group"
             >
-              {lang}
-              <span className="absolute inset-0 bg-green-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 rounded-full" />
-            </Link>
-          </motion.div>
-        ))}
+              <Link
+                href={href}
+                className={`relative z-10 px-5 py-3 text-lg font-medium rounded-full border-2 border-green-700 text-white bg-green-700 transition-colors duration-300 hover:bg-green-800 hover:border-green-800 flex items-center justify-center min-w-[120px]`}
+                aria-label={`Aller à ${label}`}
+              >
+                {label}
+                <span className="absolute inset-0 bg-green-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 rounded-full" />
+              </Link>
+            </motion.div>
+          );
+        })}
       </motion.div>
     </section>
   );

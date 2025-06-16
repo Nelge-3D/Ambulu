@@ -1,23 +1,23 @@
 "use client";
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import styles from './styles.module.css';
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import FangGreetingQuiz from "./components/FangGreetingQuiz";
 import NzebiGreetingQuiz from "./components/NzebiGreetingQuiz";
 import TekeGreetingQuiz from "./components/TekeGreetingQuiz";
 
-
 const languages = ['fang', 'nzebi', 'teke'] as const;
 export type Language = typeof languages[number];
-
 
 const languageData: Record<Language, {
   name: string;
   greeting: { french: string; translation: string; emoji: string }[];
   color: string;
   darkColor: string;
-quiz: React.ComponentType<unknown>;
+  quiz: React.ComponentType<unknown>;
 }> = {
   fang: {
     name: "Fang",
@@ -63,7 +63,7 @@ quiz: React.ComponentType<unknown>;
 const getCarouselData = (language: Language) => {
   const langData = languageData[language];
 
-  return [
+    return [
     // Carousel 1 - Bienvenue
     {
       content: (
@@ -111,9 +111,8 @@ const getCarouselData = (language: Language) => {
                 className="text-lg leading-relaxed"
                 initial={{ y: 20 }}
                 animate={{ y: 0 }}
-                transition={{ delay: 0.2 }}
               >
-                <em>Nous allons commencer par les salutations de base</em> - un excellent point de départ pour engager une conversation simple et chaleureuse.
+                <strong className={styles.languageText}>Bienvenue !</strong> Aujourd&lsquo;hui, vous allez découvrir vos premiers mots en {langData.name.toLowerCase()}.
               </motion.p>
             </motion.div>
           </motion.div>
@@ -455,6 +454,11 @@ export default function Page() {
   const [index, setIndex] = useState(0);
   const [currentLanguage, setCurrentLanguage] = useState<Language>('fang');
 
+  useEffect(() => {
+    document.documentElement.style.setProperty('--language-color', languageData[currentLanguage].color);
+    document.documentElement.style.setProperty('--language-dark-color', languageData[currentLanguage].darkColor);
+  }, [currentLanguage]);
+
   const handleNext = () => {
     setIndex((prev) => (prev + 1) % getCarouselData(currentLanguage).length);
   };
@@ -467,7 +471,7 @@ export default function Page() {
     <main className="bg-gray-50 min-h-screen font-sans">
       {/* HEADER */}
       <header className="px-6 py-4 flex justify-between items-center shadow-sm">
-        <h1 className="text-4xl font-bold" style={{ color: languageData[currentLanguage].color }}>MBOLO</h1>
+        <h1 className={`text-4xl font-bold ${styles[`${currentLanguage}Color`]}`}>MBOLO</h1>
         <div className="hidden md:flex space-x-4 items-center">
           <select
             value={currentLanguage}
@@ -475,8 +479,9 @@ export default function Page() {
               setCurrentLanguage(e.target.value as Language);
               setIndex(0);
             }}
-            className="bg-white border border-gray-300 rounded-md px-3 py-2"
-            style={{ color: languageData[currentLanguage].darkColor }}
+            className={`bg-white border border-gray-300 rounded-md px-3 py-2 ${styles.languageSelect}`}
+            aria-label="Sélectionner une langue"
+            title="Sélectionner une langue"
           >
             {languages.map(lang => (
               <option key={lang} value={lang} style={{ textTransform: 'capitalize' }}>
@@ -486,18 +491,13 @@ export default function Page() {
           </select>
           <Link
             href="/login"
-            className="bg-white border border-gray-800 px-6 py-3 rounded-md hover:bg-gray-50 transition"
-            style={{ color: languageData[currentLanguage].darkColor, borderColor: languageData[currentLanguage].darkColor }}
+            className={`bg-white border px-6 py-3 rounded-md hover:bg-gray-50 transition ${styles.languageLink}`}
           >
             Connexion
           </Link>
           <Link
             href="/search"
-            className="px-8 py-3 rounded-md hover:bg-opacity-80 transition"
-            style={{
-              backgroundColor: languageData[currentLanguage].color,
-              color: "white"
-            }}
+            className={`px-8 py-3 rounded-md hover:bg-opacity-80 transition ${styles.languageLinkBg}`}
           >
             insérer une langue
           </Link>
@@ -515,10 +515,7 @@ export default function Page() {
             transition={{ duration: 0.5 }}
             className="max-w-2xl mx-auto"
           >
-            <h3
-              className="text-2xl font-semibold mb-4"
-              style={{ color: languageData[currentLanguage].darkColor }}
-            >
+            <h3 className={`text-2xl font-semibold mb-4 ${styles.languageTitle}`}>
               {getCarouselData(currentLanguage)[index].title}
             </h3>
             {getCarouselData(currentLanguage)[index].content}
@@ -527,15 +524,13 @@ export default function Page() {
         <div className="flex justify-center mt-8 gap-4">
           <button
             onClick={handlePrev}
-            className="px-4 py-2 text-white rounded hover:opacity-90 transition"
-            style={{ backgroundColor: languageData[currentLanguage].color }}
+            className={`px-4 py-2 text-white rounded hover:opacity-90 transition ${styles.navButton}`}
           >
             ◀️ Précédent
           </button>
           <button
             onClick={handleNext}
-            className="px-4 py-2 text-white rounded hover:opacity-90 transition"
-            style={{ backgroundColor: languageData[currentLanguage].color }}
+            className={`px-4 py-2 text-white rounded hover:opacity-90 transition ${styles.navButton}`}
           >
             Suivant ▶️
           </button>
