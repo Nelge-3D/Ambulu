@@ -3,7 +3,8 @@
 import { FC, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Volume2, Shuffle, Star, ChevronDown } from "lucide-react";
-
+import Link
+ from "next/link";
 const wordCards = {
   Teke: [
     { word: "Mbote", translation: "Bonjour", audio: "/audio/teke/mbote.mp3" },
@@ -99,9 +100,9 @@ const LanguageDemoSection: FC = () => {
             </button>
           ))}
         </div>
-        <button className="bg-green-800 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition">
+        <Link href="auth/login" className="bg-green-800 text-white px-4 py-2 rounded shadow hover:bg-green-700 transition">
           Connexion
-        </button>
+        </Link>
       </div>
 
       {/* Titre et score */}
